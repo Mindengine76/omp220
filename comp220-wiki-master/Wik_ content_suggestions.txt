@@ -1,0 +1,10 @@
+Wiki content suggestions
+
+AI in Games
+
+1) AI crack (more addictive games through big, data and AI content creation)
+2)Game AI versus industrial/academic AI (compare, contrast)
+3)AI NPC
+4)AI and context sensitive behavior
+5) Player expereince and AI (similar to number 1, but positive)
+6)Games industry automation (games build by AI, philosophical issues involved)
