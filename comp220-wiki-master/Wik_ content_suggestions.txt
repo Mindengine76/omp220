@@ -3,5 +3,7 @@ Wiki content suggestions
 AI generated graphic in Games
 
 1) AI crack (more addictive games through big, data and AI content creation ---- Graphics)
-
+2) Evolution of computer graphics (in under 1200 words)
+3) So why all the triangles? (a look at the reason and maths for graphic generation of shapes, meshes etc)
+4)The future of graphics a review of the most interesting new research and predictions regard computer graphics in games (crystal ball predictions back up by science)
 
