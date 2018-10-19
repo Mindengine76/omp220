@@ -90,6 +90,7 @@ int main(int argc, char * argv[])
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
 	GLuint programID = LoadShaders("vert.glsl", "frag.glsl");
+	glUseProgram(programID);
 
 	if (programID<0) {
 		//error check
@@ -114,49 +115,46 @@ int main(int argc, char * argv[])
 	}
 
 	//matrix stuff___________position/scale/rotation
-	glm::vec3 position = glm::vec3(0.0, 0.0f, 0.0f);
-	glm::vec3 Tri_scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	glm::vec3 Tri_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 position = glm::vec3(0.0f, 0.5f, 0.0f);
+	glm::vec3 Tri_scale = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec3 Tri_rotation = glm::vec3(0.0f, 10.0f, 10.0f);
 	//scaling matrix
 	glm::mat4 translationMatrix = glm::translate(position);
 	glm::mat4 scaleMatrix = glm::scale(Tri_scale);
 	//rotation matrix
-	glm::mat4 rotationMatrix = glm::rotate(Tri_rotation.z, glm::vec3(0.0f,0.0f,1.f));
+	glm::mat4 rotationMatrix = glm::rotate(Tri_rotation.x, glm::vec3(1.0f,0.0f,0.0f))
+		*glm::rotate(Tri_rotation.y, glm::vec3(0.0f,1.0f,0.0f))
+		*glm::rotate(Tri_rotation.z, glm::vec3(0.0f, 0.0f, 1.f));
 	//final matrix
-	//glm::mat4 modelMatrix = translationMatrix* rotationMatrix * scaleMatrix;//does it need the orginal vector?
-	glm::mat4 modelMatrix = glm::mat4(0.0f);
+	glm::mat4 modelMatrix = translationMatrix* rotationMatrix * scaleMatrix;//does it need the orginal vector?
+	
 	//Add the camera (view matrix)
 
 	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, -5.0f);
 	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraup = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	//glm::mat4 cameraMatrix = glm::lookAt(cameraPos, cameraTarget, cameraup);
-	glm::mat4 cameraMatrix = glm::mat4(0.0f); 
+	glm::mat4 cameraMatrix = glm::lookAt(cameraPos, cameraTarget, cameraup);
+
 
 	//projection matrixs
 
-	//glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(45.0f), float(800 / 600), 0.1f, 100.0f);//no radians function--check header files
-	glm::mat4 ProjectionMatrix = glm::mat4(0.0f); 
+	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(45.0f), float(800 / 600), 0.1f, 100.0f);
+	
 
-//Keep all uniforms here!!!!______________________________
+	//Keep all uniforms here!!!!______________________________
 
 	GLint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 	GLint ViewMatrixLocation = glGetUniformLocation(programID, "ViewMatrix");
 	GLint ProjectionMatrixLocation = glGetUniformLocation(programID, "ProjectionMatrix");
 
 
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-	glUniformMatrix4fv(ViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
-	glUniformMatrix4fv(ProjectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
-
+	
 
 
 	
 	//Game loop
 	bool isrunning = true;
-
-
 
 
 		SDL_Event event;
@@ -177,7 +175,37 @@ int main(int argc, char * argv[])
 					case SDLK_ESCAPE:
 						isrunning = false;
 						break;
+					case SDLK_w:
+						cameraPos.z += 1.0f;
+						cameraTarget.z += 1.0f;
+						break;
+					case SDLK_s:
+						cameraPos.z -= 1.0f;
+						cameraTarget.z -= 1.0f;
+						break;
+					case SDLK_a:
+						cameraPos.x -= 1.0f;
+						cameraTarget.x -= 1.0f;
+						break;
+					case SDLK_d:
+						cameraPos.x += 1.0f;
+						cameraTarget.x += 1.0f;
+						break;
+						//arrow keys---suggestion to self : use the arrow keys to control the rotation of the object
+					case SDLK_UP:
+						position.y += 1.0f;
+						break;
+					case SDLK_DOWN:
+						position.y -= 1.0f;
+						break;
+					case SDLK_RIGHT:
+						position.x += 1.0f;
+						break;
+					case SDLK_LEFT: 
+						position.x += 1.0f;
+						break;
 					}
+
 				}
 			}
 
@@ -190,7 +218,23 @@ int main(int argc, char * argv[])
 
 			//glUniformMatrix4fv(modelMatrixlocation, 1, GL_false, glm::value_ptr(modelMatrix));
 
+			//Recalculations for the camera to cope with move/camera movement. This means that the matrix(s) needs to be fed back
+
+			cameraMatrix = glm::lookAt(cameraPos, cameraTarget, cameraup);
+
 			
+			//translationMatrix = glm::translate(position);
+			//scaleMatrix = glm::scale(Tri_scale);//new addition
+			rotationMatrix = glm::rotate(Tri_rotation.x, glm::vec3(1.0f, 0.0f, 0.0f))
+				*glm::rotate(Tri_rotation.y, glm::vec3(0.0f, 1.0f, 0.0f))
+				*glm::rotate(Tri_rotation.z, glm::vec3(0.0f, 0.0f, 1.f));//new addition
+
+			modelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
+
+			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+			glUniformMatrix4fv(ViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+			glUniformMatrix4fv(ProjectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
+
 
 			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
