@@ -8,6 +8,8 @@
 #include<glm\gtc\type_PTR.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include"Shader.h"
+#include "SDL_image.h"
+#include "Texture.h"
 
 
 //go to github comp230 examples and switch branches to .......get texture.h and texture.cpp
@@ -26,6 +28,8 @@ int main(int argc, char * argv[])
 		return 1;
 
 	}
+
+	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 
 	SDL_Window* window = SDL_CreateWindow("SDL window",
 		SDL_WINDOWPOS_UNDEFINED,
@@ -77,9 +81,9 @@ int main(int argc, char * argv[])
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	//creating the vertex for the triangle 
+	//creating the vertex for the triangle/cube 
 
-	static const GLfloat g_vertex_buffer_data[] = {
+	/*static const GLfloat g_vertex_buffer_data[] = {
 	 -1.0f,-1.0f,-1.0f, 
 	-1.0f,-1.0f, 1.0f,
 	-1.0f, 1.0f, 1.0f, 
@@ -116,7 +120,14 @@ int main(int argc, char * argv[])
 	1.0f, 1.0f, 1.0f,
 	-1.0f, 1.0f, 1.0f,
 	1.0f,-1.0f, 1.0f
-	};
+	};*/
+
+	//
+	static const GLfloat squareVertices[] = {
+		(0.1f, 1.0f, 1.0f)
+	
+	
+	}
 
 	//create vertex buffer
 	GLuint vertexbuffer;
@@ -132,6 +143,8 @@ int main(int argc, char * argv[])
 		printf("Shaders %s and %s are not working", "vert.glsl", "frag.glsl");
 	}
 
+	//Add texture 
+	GLuint textureID = loadTextureFromFile("Crate.jpg");
 
 	GLuint location = glGetUniformLocation(programID, "changeLocation");
 	glUniform3f(location, 1, 2, 3);
@@ -300,11 +313,13 @@ int main(int argc, char * argv[])
 		glDeleteVertexArrays(1, &VertexArrayID);
 
 		glDeleteBuffers(1, &vertexbuffer);
-
+		//DeleteTexture
+		glDeleteTextures(1, &textureID);
 		//Delete Context
 		SDL_GL_DeleteContext(gl_Context);
 
 		SDL_DestroyWindow(window);
+		IMG_Quit();
 		SDL_Quit();
 	
 	return 0;
