@@ -9,6 +9,8 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include"Shader.h"
 
+
+//go to github comp230 examples and switch branches to .......get texture.h and texture.cpp
 using namespace std; 
 
 float TpositionX=0.0;
@@ -78,9 +80,42 @@ int main(int argc, char * argv[])
 	//creating the vertex for the triangle 
 
 	static const GLfloat g_vertex_buffer_data[] = {
-		-1.0f, -1.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f,
-		 0.0f, 1.0f, 0.0f,
+	 -1.0f,-1.0f,-1.0f, 
+	-1.0f,-1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f, 
+	1.0f, 1.0f,-1.0f, 
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f, 
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	-1.0f,-1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f,-1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f,-1.0f,
+	1.0f,-1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f,-1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f,-1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f,-1.0f, 1.0f
 	};
 
 	//create vertex buffer
@@ -239,18 +274,20 @@ int main(int argc, char * argv[])
 			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
 			glEnableVertexAttribArray(0);
+
+			//For textures duplicate this section and change the data(values)
 			
 			glVertexAttribPointer(
-				0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-				3,                  // size
+				0,                  // change to 2
+				3,                  // change to 
 				GL_FLOAT,           // type
 				GL_FALSE,           // normalized?
 				0,                  // stride
-				(void*)0            // array buffer offset
+				(void*)0            // this becomes 7 (need to shift throught the x,y,z,r,g,b,alpha)
 			);
 
 				
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDrawArrays(GL_TRIANGLES, 0, 12*3);
 			glDisableVertexAttribArray(0);
 
 

@@ -9,7 +9,8 @@ uniform mat4 modelMatrix=mat4(1.0f);
 uniform mat4 ViewMatrix=mat4(1.0f);
 uniform mat4 ProjectionMatrix=mat4(1.0f);
 
-
+//textures tu, tv
+//add three flaots
 
 
 void main()

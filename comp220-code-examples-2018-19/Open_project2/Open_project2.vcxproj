@@ -88,16 +88,17 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Libraries\glm;..\Libraries\SDL2-2.0.6\include;..\Libraries\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libraries\SDL2-2.0.8\include;..\Libraries\glm;..\Libraries\SDL2_image-2.0.3\include;..\Libraries\glew-2.1.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\Libraries\glew-2.1.0\lib\Release\Win32;..\Libraries\SDL2-2.0.6\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenGL32.lib;glew32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Libraries\glew-2.1.0\lib\Release\Win32;..\Libraries\SDL2_image-2.0.3\lib\x86;..\Libraries\SDL2-2.0.8\lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;glew32.lib;SDL2_image.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy "..\Libraries\SDL2-2.0.6\lib\x86\SDL2.dll" "$(OutDir)SDL2.dll"
-copy "..\Libraries\glew-2.1.0\bin\Release\Win32\glew32.dll" "$(OutDir)glew32.dll"</Command>
+      <Command>copy "..\Libraries\SDL2-2.0.8\lib\x86\SDL2.dll" "$(OutDir)SDL2.dll"
+copy "..\Libraries\glew-2.1.0\bin\Release\Win32\glew32.dll" "$(OutDir)glew32.dll"
+xcopy /Y /D /I ..\Libraries\SDL2_image-2.0.3\lib\x86\*.dll "$(OutDir)\*.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -120,13 +121,13 @@ copy "..\Libraries\glew-2.1.0\bin\Release\Win32\glew32.dll" "$(OutDir)glew32.dll
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\omp220\comp220-code-examples-2018-19\Libraries\SDL2-2.0.6\include;G:\omp220\comp220-code-examples-2018-19\Libraries\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>\...\...\...\Libraries\SDL2_image-2.0.3\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Scott\Desktop\2rd_term1\Comp220_GL\omp220\comp220-code-examples-2018-19\Libraries\SDL2-2.0.6\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenGL.32lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>SDL2_image.lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL.32lib;glew32.lib;%(AdditionalDependencies);SDL2_image.lib;SDL2_image.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -149,10 +150,12 @@ copy "..\Libraries\glew-2.1.0\bin\Release\Win32\glew32.dll" "$(OutDir)glew32.dll
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="frag.glsl" />
