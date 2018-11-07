@@ -174,12 +174,6 @@ int main(int argc, char * argv[])
 	-1.0f, 1.0f, 1.0f,
 	1.0f,-1.0f, 1.0f
 	};
-	
-	
-	
-	
-	
-	
 	*/
 	
 
@@ -366,7 +360,7 @@ int main(int argc, char * argv[])
 			);
 
 			
-			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
+			glDrawElements(GL_TRIANGLES, 8, GL_UNSIGNED_INT, (void*)0);
 			glDisableVertexAttribArray(0);
 
 		

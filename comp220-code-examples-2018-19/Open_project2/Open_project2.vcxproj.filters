@@ -40,7 +40,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vert.glsl" />
-    <None Include="frag.glsl" />
+    <None Include="colorVert.glsl" />
+    <None Include="colorfrag.glsl" />
+    <None Include="textureFrag.glsl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="textureVert.glsl">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
