@@ -10,6 +10,7 @@
 #include"Shader.h"
 #include "SDL_image.h"
 #include "Texture.h"
+#include "Vertex.h"
 
 
 //go to github comp230 examples and switch branches to .......get texture.h and texture.cpp
@@ -35,7 +36,7 @@ int main(int argc, char * argv[])
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		800, 600,
-		SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
+		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
 	if (window == nullptr)
 	{
@@ -43,8 +44,8 @@ int main(int argc, char * argv[])
 			"SDL_Create window failed",
 			SDL_GetError(),
 			NULL);
-				SDL_Quit();
-					return 1;
+		SDL_Quit();
+		return 1;
 	}
 
 	// request core OpenGL(creating a context)
@@ -67,12 +68,12 @@ int main(int argc, char * argv[])
 
 	//init glew
 
-	glewExperimental = GL_TRUE; 
+	glewExperimental = GL_TRUE;
 	GLenum error = glewInit();
 
-	if (error!= GLEW_OK)
+	if (error != GLEW_OK)
 	{
-		std::cout << glewGetErrorString(error)<<std::endl;
+		std::cout << glewGetErrorString(error) << std::endl;
 	}
 
 	// creating a vertex Array object
@@ -81,7 +82,59 @@ int main(int argc, char * argv[])
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	//creating the vertex for the triangle/cube 
+	//This is the vertices, rgba, and texture data added 
+	// {x,y,z,r,g,b,a,tu,tv}
+	/*
+	static const Vertex cubeIndiciesArray[]     //g_vertex_buffer_data[] =   redundent code
+	{
+		{ -0.5f, -0.5f, 0.0f,  1.0f,0.0f,1.0f,1.0f, 0.0f,0.0f },
+		{ 0.5f, -0.5f, 0.0f,  0.0f,1.0f,1.0f,1.0f,  1.0f,0.0f},
+		{ 0.5f, 0.5f, 0.0f,  1.0f,1.0f,0.0f,1.0f,  1.0f,1.0f},
+		{ -0.5f, 0.5f, 0.0f,  1.0f,1.0f,1.0f,1.0f,  0.0f,1.0},
+
+		{ -0.5f,-0.5f, -1.0f,  1.0f,0.0f,0.0f,1.0f, 0.0f,0.0f },
+		{ 0.5f,-0.5f, -1.0f,  1.0f,1.0f,0.0f,1.0f,  1.0f,0.0f},
+		{ 0.5f,0.5f, -1.0f,  0.0f,0.0f,1.0f,1.0f,  1.0f,1.0f},
+		{ -0.5f,0.5f, -1.0f,  0.0f,1.0f,0.0f,1.0f,  0.0f,1.0}
+
+	};
+	*/
+	static const Vertex cubeIndiciesArray[]     //g_vertex_buffer_data[] =   redundent code
+	{
+		{ -0.5f, -0.5f, 0.0f,  1.0f,0.0f,1.0f,1.0f },
+		{ 0.5f, -0.5f, 0.0f,  0.0f,1.0f,1.0f,1.0f},
+		{ 0.5f, 0.5f, 0.0f,  1.0f,1.0f,0.0f,1.0f},
+		{ -0.5f, 0.5f, 0.0f,  1.0f,1.0f,1.0f,1.0f},
+
+		{ -0.5f,-0.5f, -1.0f,  1.0f,0.0f,0.0f,1.0f},
+		{ 0.5f,-0.5f, -1.0f,  1.0f,1.0f,0.0f,1.0f},
+		{ 0.5f,0.5f, -1.0f,  0.0f,0.0f,1.0f,1.0f},
+		{ -0.5f,0.5f, -1.0f,  0.0f,1.0f,0.0f,1.0f}
+
+	};
+
+
+	// Indicies must be set in anti-clockwise if on the outside of the cube order due to back-face culling
+	static const int cubeIndiciesArray[] =
+	{
+		0,1,2, // Represenative of one triangle
+		2,3,0,
+
+		6,5,4,
+		4,7,6,
+
+		7,3,2,
+		2,6,7,
+
+		6,2,1,
+		1,5,6,
+
+		3,7,4,
+		4,0,3,
+
+		1,0,5,
+		5,0,4
+	};
 
 	/*static const GLfloat g_vertex_buffer_data[] = {
 	 -1.0f,-1.0f,-1.0f, 
@@ -120,20 +173,21 @@ int main(int argc, char * argv[])
 	1.0f, 1.0f, 1.0f,
 	-1.0f, 1.0f, 1.0f,
 	1.0f,-1.0f, 1.0f
-	};*/
-
-	//
-	static const GLfloat squareVertices[] = {
-		(0.1f, 1.0f, 1.0f)
+	};
 	
 	
-	}
+	
+	
+	
+	
+	*/
+	
 
 	//create vertex buffer
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex), cubeIndiciesArray , GL_STATIC_DRAW);/*g_vertex_buffer_data*/
 
 	GLuint programID = LoadShaders("vert.glsl", "frag.glsl");
 	glUseProgram(programID);
@@ -286,24 +340,38 @@ int main(int argc, char * argv[])
 
 			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
-			glEnableVertexAttribArray(0);
+			// Attribute pointer for vertices
 
-			//For textures duplicate this section and change the data(values)
-			
+			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(
 				0,                  // change to 2
 				3,                  // change to 
 				GL_FLOAT,           // type
 				GL_FALSE,           // normalized?
-				0,                  // stride
-				(void*)0            // this becomes 7 (need to shift throught the x,y,z,r,g,b,alpha)
+				sizeof(Vertex),                  // stride
+				(void*)0            // this becomes 7 later on (need to shift throught the x,y,z,r,g,b,alpha)
 			);
 
-				
-			glDrawArrays(GL_TRIANGLES, 0, 12*3);
+				// Attribute pointer for RGBA
+			
+
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(
+				1,                  
+				4,                  
+				GL_FLOAT,           
+				GL_FALSE,           
+				sizeof(Vertex),                  // stride
+				(void*)(3*sizeof(float))            
+			);
+
+			
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
 			glDisableVertexAttribArray(0);
 
-
+		
+			//glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+			//glDisableVertexAttribArray(0);
 
 			SDL_GL_SwapWindow(window);
 
