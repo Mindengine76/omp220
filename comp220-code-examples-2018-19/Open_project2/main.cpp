@@ -13,7 +13,7 @@
 #include "Vertex.h"
 
 
-//go to github comp230 examples and switch branches to .......get texture.h and texture.cpp
+
 using namespace std; 
 
 float TpositionX=0.0;
@@ -115,9 +115,9 @@ int main(int argc, char * argv[])
 
 
 	// Indicies must be set in anti-clockwise if on the outside of the cube order due to back-face culling
-	static const int cubeIndiciesArray[] =
+	static const int cubeVerticesArray[] =
 	{
-		0,1,2, // Represenative of one triangle
+		0,1,2, //one triangle of the square
 		2,3,0,
 
 		6,5,4,
@@ -178,12 +178,23 @@ int main(int argc, char * argv[])
 	
 
 	//create vertex buffer
+
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex), cubeIndiciesArray , GL_STATIC_DRAW);/*g_vertex_buffer_data*/
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex), cubeIndiciesArray , GL_STATIC_DRAW);
 
-	GLuint programID = LoadShaders("vert.glsl", "frag.glsl");
+	/*issues here --massive renaming of variables and shaders happening (too many cooks! took too much advice 
+	from fellow student less attention to video tutorials---now paying the price--cod is getting super confusing*/
+
+	GLuint programID = LoadShaders("textureVert.glsl", "texturefrag.glsl");
+
+	GLuint fragColorLocation = glGetUniformLocation(programID, "fragColour");
+	static const GLfloat fragColour[] = { 0.0f,1.0f,1.0f };
+
+
+	GLint currentTimeLocation = glGetUniformLocation(programID, "time"); //where is this unifrom listed?
+
 	glUseProgram(programID);
 
 	if (programID<0) {
@@ -243,6 +254,7 @@ int main(int argc, char * argv[])
 	GLint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 	GLint ViewMatrixLocation = glGetUniformLocation(programID, "ViewMatrix");
 	GLint ProjectionMatrixLocation = glGetUniformLocation(programID, "ProjectionMatrix");
+	GLint textureLocation = glGetUniformLocation(programID, "baseTexture");
 
 
 	
@@ -330,7 +342,11 @@ int main(int argc, char * argv[])
 			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 			glUniformMatrix4fv(ViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 			glUniformMatrix4fv(ProjectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
+			glUniform1i(textureLocation, 0);
+		
 
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, textureID);
 
 			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
@@ -343,7 +359,7 @@ int main(int argc, char * argv[])
 				GL_FLOAT,           // type
 				GL_FALSE,           // normalized?
 				sizeof(Vertex),                  // stride
-				(void*)0            // this becomes 7 later on (need to shift throught the x,y,z,r,g,b,alpha)
+				(void*)0            // this becomes 7 later on (need to shift throught the x,y,z,r,g,b,alpha++textures)
 			);
 
 				// Attribute pointer for RGBA
@@ -359,8 +375,19 @@ int main(int argc, char * argv[])
 				(void*)(3*sizeof(float))            
 			);
 
+
+			glEnableVertexAttribArray(2);
+			glVertexAttribLPointer(
+				2, 
+				2, 
+				GL_FLOAT, 
+				GL_FALSE, 
+				sizeof(Vertex), 
+				(void*)(7 * sizeof(float))
+			);
+
 			
-			glDrawElements(GL_TRIANGLES, 8, GL_UNSIGNED_INT, (void*)0);
+			glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, (void*)0);
 			glDisableVertexAttribArray(0);
 
 		
