@@ -99,23 +99,23 @@ int main(int argc, char * argv[])
 
 	};
 	*/
-	static const Vertex cubeIndiciesArray[]     //g_vertex_buffer_data[] =   redundent code
+	static const Vertex cubeVerticesArray[]     //g_vertex_buffer_data[] =   redundent code
 	{
-		{ -0.5f, -0.5f, 0.0f,  1.0f,0.0f,1.0f,1.0f },
-		{ 0.5f, -0.5f, 0.0f,  0.0f,1.0f,1.0f,1.0f},
-		{ 0.5f, 0.5f, 0.0f,  1.0f,1.0f,0.0f,1.0f},
-		{ -0.5f, 0.5f, 0.0f,  1.0f,1.0f,1.0f,1.0f},
+		{ -0.5f, -0.5f, 0.0f,  1.0f,0.0f,1.0f,1.0f,0.0f,0.0f },
+		{ 0.5f, -0.5f, 0.0f,  0.0f,1.0f,1.0f,1.0f,1.0f,0.0f},
+		{ 0.5f, 0.5f, 0.0f,  1.0f,1.0f,0.0f,1.0f,1.0f,1.0f},
+		{ -0.5f, 0.5f, 0.0f,  1.0f,1.0f,1.0f,1.0f,0.0f,1.0f},
 
-		{ -0.5f,-0.5f, -1.0f,  1.0f,0.0f,0.0f,1.0f},
-		{ 0.5f,-0.5f, -1.0f,  1.0f,1.0f,0.0f,1.0f},
-		{ 0.5f,0.5f, -1.0f,  0.0f,0.0f,1.0f,1.0f},
-		{ -0.5f,0.5f, -1.0f,  0.0f,1.0f,0.0f,1.0f}
+		{ -0.5f,-0.5f, -1.0f,  1.0f,0.0f,0.0f,1.0f,0.0f,0.0f},
+		{ 0.5f,-0.5f, -1.0f,  1.0f,1.0f,0.0f,1.0f,1.0f,0.0f},
+		{ 0.5f,0.5f, -1.0f,  0.0f,0.0f,1.0f,1.0f,1.0f,1.0f},
+		{ -0.5f,0.5f, -1.0f,  0.0f,1.0f,0.0f,1.0f,0.0f,1.0f}
 
 	};
 
 
 	// Indicies must be set in anti-clockwise if on the outside of the cube order due to back-face culling
-	static const int cubeVerticesArray[] =
+	static const int cubeIndicesArray[] =
 	{
 		0,1,2, //one triangle of the square
 		2,3,0,
@@ -182,18 +182,53 @@ int main(int argc, char * argv[])
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex), cubeIndiciesArray , GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 8*sizeof(Vertex), cubeVerticesArray, GL_STATIC_DRAW);
+	// Attribute pointer for vertices
+
+	GLuint elementBuffer;
+	glGenBuffers(1, &elementBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36*sizeof(int), cubeIndicesArray, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(
+		0,                  // change to 2
+		3,                  // change to 
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		sizeof(Vertex),                  // stride
+		(void*)0            // this becomes 7 later on (need to shift throught the x,y,z,r,g,b,alpha++textures)
+	);
+
+	// Attribute pointer for RGBA
+
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(
+		1,
+		4,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vertex),                  // stride
+		(void*)(3 * sizeof(float))
+	);
+
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(
+		2,
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vertex),
+		(void*)(7 * sizeof(float))
+	);
+
 
 	/*issues here --massive renaming of variables and shaders happening (too many cooks! took too much advice 
 	from fellow student less attention to video tutorials---now paying the price--cod is getting super confusing*/
 
 	GLuint programID = LoadShaders("textureVert.glsl", "texturefrag.glsl");
-
-	GLuint fragColorLocation = glGetUniformLocation(programID, "fragColour");
-	static const GLfloat fragColour[] = { 0.0f,1.0f,1.0f };
-
-
-	GLint currentTimeLocation = glGetUniformLocation(programID, "time"); //where is this unifrom listed?
 
 	glUseProgram(programID);
 
@@ -204,9 +239,6 @@ int main(int argc, char * argv[])
 
 	//Add texture 
 	GLuint textureID = loadTextureFromFile("Crate.jpg");
-
-	GLuint location = glGetUniformLocation(programID, "changeLocation");
-	glUniform3f(location, 1, 2, 3);
 
 
 	//error catching
@@ -252,10 +284,12 @@ int main(int argc, char * argv[])
 	//Keep all uniforms here!!!!______________________________
 
 	GLint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
-	GLint ViewMatrixLocation = glGetUniformLocation(programID, "ViewMatrix");
-	GLint ProjectionMatrixLocation = glGetUniformLocation(programID, "ProjectionMatrix");
+	GLint ViewMatrixLocation = glGetUniformLocation(programID, "viewMatrix");
+	GLint ProjectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
 	GLint textureLocation = glGetUniformLocation(programID, "baseTexture");
 
+
+	glEnable(GL_CULL_FACE);
 
 	
 
@@ -324,6 +358,12 @@ int main(int argc, char * argv[])
 
 			glUseProgram(programID);
 
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, textureID);
+
+			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+
 			//glUniformMatrix4fv(modelMatrixlocation, 1, GL_false, glm::value_ptr(modelMatrix));
 
 			//Recalculations for the camera to cope with move/camera movement. This means that the matrix(s) needs to be fed back
@@ -345,50 +385,13 @@ int main(int argc, char * argv[])
 			glUniform1i(textureLocation, 0);
 		
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, textureID);
-
-			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-
-			// Attribute pointer for vertices
-
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(
-				0,                  // change to 2
-				3,                  // change to 
-				GL_FLOAT,           // type
-				GL_FALSE,           // normalized?
-				sizeof(Vertex),                  // stride
-				(void*)0            // this becomes 7 later on (need to shift throught the x,y,z,r,g,b,alpha++textures)
-			);
-
-				// Attribute pointer for RGBA
-			
-
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(
-				1,                  
-				4,                  
-				GL_FLOAT,           
-				GL_FALSE,           
-				sizeof(Vertex),                  // stride
-				(void*)(3*sizeof(float))            
-			);
 
 
-			glEnableVertexAttribArray(2);
-			glVertexAttribLPointer(
-				2, 
-				2, 
-				GL_FLOAT, 
-				GL_FALSE, 
-				sizeof(Vertex), 
-				(void*)(7 * sizeof(float))
-			);
+
 
 			
-			glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, (void*)0);
-			glDisableVertexAttribArray(0);
+			glDrawElements(GL_TRIANGLES,36 , GL_UNSIGNED_INT, (void*)0);
+			
 
 		
 			//glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
