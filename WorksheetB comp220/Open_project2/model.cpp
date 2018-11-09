@@ -79,4 +79,75 @@ bool loadModelFromFile(const std::string& filename, GLuint VBO, GLuint EBO, unsi
 
 
 
+bool loadMeshesFromFile(const std::string & filename, std::vector<Mesh*>& meshes)
+{
+	
+	Assimp::Importer importer;
+
+	const aiScene* scene = importer.ReadFile(filename, aiProcessPreset_TargetRealtime_Fast | aiProcess_FlipUVs);
+
+	if (scene == nullptr)
+	{
+		printf("Error loading model %s", importer.GetErrorString());
+		return false;
+	}
+
+
+	std::vector<Vertex> vertices;
+
+	std::vector<unsigned int> indices;
+
+	for (unsigned int m = 0; m < scene->mNumMeshes; m++)
+	{
+		const aiMesh* currentAIMesh = scene->mMeshes[m];
+
+		Mesh* ourCurrentMesh = new Mesh(); 
+		ourCurrentMesh->init();
+
+
+		for (unsigned int v = 0; v < currentAIMesh->mNumVertices; v++)
+		{
+			const aiVector3D currentAiPosition = currentAIMesh->mVertices[v];
+
+			Vertex ourVertex;
+			ourVertex.x = currentAiPosition.x;
+			ourVertex.y = currentAiPosition.y;
+			ourVertex.z = currentAiPosition.z;
+
+			ourVertex.r = 1.0f; ourVertex.g = 1.0f; ourVertex.b = 1.0f; ourVertex.a = 1.0f;
+
+			ourVertex.tu = 0.0f;
+			ourVertex.tv = 0.0f;
+
+			if (currentAIMesh->HasTextureCoords(0))
+			{
+				const aiVector3D currenttextureCoords = currentAIMesh->mTextureCoords[0][v];
+				ourVertex.tu = currenttextureCoords.x;
+				ourVertex.tv = currenttextureCoords.y;
+			}
+			
+
+
+			vertices.push_back(ourVertex);
+		}
+
+		for (unsigned int f = 0; f < currentAIMesh->mNumFaces; f++)
+		{
+			const aiFace currentFace = currentAIMesh->mFaces[f];
+
+			indices.push_back(currentFace.mIndices[0]);
+			indices.push_back(currentFace.mIndices[1]);
+			indices.push_back(currentFace.mIndices[2]);
+		}
+	
+		ourCurrentMesh->copyMeshData(vertices, indices);
+		meshes.push_back(ourCurrentMesh);
+	
+	
+	
+	return true;
+	};
+
+
+
 

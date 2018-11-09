@@ -150,12 +150,14 @@ xcopy /Y /D /I ..\Libraries\SDL2_image-2.0.3\lib\x86\*.dll "$(OutDir)\*.dll"</Co
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />

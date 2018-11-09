@@ -79,15 +79,9 @@ int main(int argc, char * argv[])
 	}
 
 
-
-
-
-
-
-
 	// creating a vertex Array object
 
-	GLuint VertexArrayID;
+	/*GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
@@ -108,7 +102,7 @@ int main(int argc, char * argv[])
 
 	};
 	*/
-	static const Vertex cubeVerticesArray[]     //g_vertex_buffer_data[] =   redundent code
+	/*static const Vertex cubeVerticesArray[]     //g_vertex_buffer_data[] =   redundent code
 	{
 		{ -0.5f, -0.5f, 0.0f,  1.0f,0.0f,1.0f,1.0f,0.0f,0.0f },
 		{ 0.5f, -0.5f, 0.0f,  0.0f,1.0f,1.0f,1.0f,1.0f,0.0f},
@@ -183,7 +177,7 @@ int main(int argc, char * argv[])
 	-1.0f, 1.0f, 1.0f,
 	1.0f,-1.0f, 1.0f
 	};
-	*/
+	
 	
 
 	//create vertex buffer
@@ -198,8 +192,10 @@ int main(int argc, char * argv[])
 	glGenBuffers(1, &elementBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36*sizeof(int), cubeIndicesArray, GL_STATIC_DRAW);
+	*/
 
-	glEnableVertexAttribArray(0);
+
+	/*glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0,                  // change to 2
 		3,                  // change to 
@@ -234,7 +230,7 @@ int main(int argc, char * argv[])
 	);
 
 
-	/*issues here --massive renaming of variables and shaders happening (too many cooks! took too much advice 
+	issues here --massive renaming of variables and shaders happening (too many cooks! took too much advice 
 	from fellow student less attention to video tutorials---now paying the price--cod is getting super confusing*/
 
 	GLuint programID = LoadShaders("textureVert.glsl", "texturefrag.glsl");
@@ -247,13 +243,14 @@ int main(int argc, char * argv[])
 	}
 
 
-	// MODEL in this section 
+	// *********************************LOAD MODELIN THIS SECTION**************************************************************
+	//unsigned int numberOfVertices=0;
+	//unsigned int numberOfIndices=0; 
+	//loadModelFromFile("Tank1.Fbx",vertexbuffer,elementBuffer, numberOfVertices, numberOfIndices);
 
-	unsigned int numberOfVertices=0;
-	unsigned int numberOfIndices=0; 
 
-	loadModelFromFile("Tank1.Fbx",vertexbuffer,elementBuffer, numberOfVertices, numberOfIndices);
-
+	std::vector<Mesh*>meshes; 
+	loadMeshesFromFile("Tank1.fbx", meshes);
 
 
 
@@ -389,11 +386,9 @@ int main(int argc, char * argv[])
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, textureID);
 
-			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-
+			//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 			//glUniformMatrix4fv(modelMatrixlocation, 1, GL_false, glm::value_ptr(modelMatrix));
-
 			//Recalculations for the camera to cope with move/camera movement. This means that the matrix(s) needs to be fed back
 
 			cameraMatrix = glm::lookAt(cameraPos, cameraTarget, cameraup);
@@ -412,26 +407,40 @@ int main(int argc, char * argv[])
 			glUniformMatrix4fv(ProjectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
 			glUniform1i(textureLocation, 0);
 		
-
-			
-			glDrawElements(GL_TRIANGLES,numberOfIndices, GL_UNSIGNED_INT, (void*)0);
-			
-
+			//glDrawElements(GL_TRIANGLES,numberOfIndices, GL_UNSIGNED_INT, (void*)0);
 		
-			//glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
-			//glDisableVertexAttribArray(0);
+
+			for (Mesh* currentmesh : meshes)
+			{
+				currentmesh->render();
+			}
+
 
 			SDL_GL_SwapWindow(window);
 
 		}
 
-		//Delete vertexArray
-		glDeleteVertexArrays(1, &VertexArrayID);
+		auto iter = meshes.begin();
 
-		glDeleteBuffers(1, &vertexbuffer);
-		//DeleteTexture
+		while(iter != meshes.end())
+		{
+			if ((*iter))
+			{
+				(*iter)->Destroy();
+				delete(*iter); 
+				iter = meshes.erase(iter);
+			}
+			else
+			{
+				iter++;
+			}
+
+			
+		}
+
+		meshes.clear();
+
 		glDeleteTextures(1, &textureID);
-		//Delete Context
 		SDL_GL_DeleteContext(gl_Context);
 
 		SDL_DestroyWindow(window);
