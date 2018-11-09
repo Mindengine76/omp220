@@ -11,6 +11,8 @@
 #include "SDL_image.h"
 #include "Texture.h"
 #include "Vertex.h"
+#include "model.h"
+
 
 
 
@@ -75,6 +77,13 @@ int main(int argc, char * argv[])
 	{
 		std::cout << glewGetErrorString(error) << std::endl;
 	}
+
+
+
+
+
+
+
 
 	// creating a vertex Array object
 
@@ -237,6 +246,20 @@ int main(int argc, char * argv[])
 		printf("Shaders %s and %s are not working", "vert.glsl", "frag.glsl");
 	}
 
+
+	// MODEL in this section 
+
+	unsigned int numberOfVertices=0;
+	unsigned int numberOfIndices=0; 
+
+	loadModelFromFile("Tank1.Fbx",vertexbuffer,elementBuffer, numberOfVertices, numberOfIndices);
+
+
+
+
+
+
+
 	//Add texture 
 	GLuint textureID = loadTextureFromFile("Crate.jpg");
 
@@ -253,6 +276,11 @@ int main(int argc, char * argv[])
 		return 1;
 	}
 
+
+
+
+
+
 	//matrix stuff___________position/scale/rotation
 	glm::vec3 position = glm::vec3(0.0f, 0.5f, 0.0f);
 	glm::vec3 Tri_scale = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -265,7 +293,7 @@ int main(int argc, char * argv[])
 		*glm::rotate(Tri_rotation.y, glm::vec3(0.0f,1.0f,0.0f))
 		*glm::rotate(Tri_rotation.z, glm::vec3(0.0f, 0.0f, 1.f));
 	//final matrix
-	glm::mat4 modelMatrix = translationMatrix* rotationMatrix * scaleMatrix;//does it need the orginal vector?
+	glm::mat4 modelMatrix = translationMatrix* rotationMatrix * scaleMatrix;
 	
 	//Add the camera (view matrix)
 
@@ -344,7 +372,7 @@ int main(int argc, char * argv[])
 						position.x += 1.0f;
 						break;
 					case SDLK_LEFT: 
-						position.x += 1.0f;
+						position.x -= 1.0f;
 						break;
 					}
 
@@ -385,12 +413,8 @@ int main(int argc, char * argv[])
 			glUniform1i(textureLocation, 0);
 		
 
-
-
-
-
 			
-			glDrawElements(GL_TRIANGLES,36 , GL_UNSIGNED_INT, (void*)0);
+			glDrawElements(GL_TRIANGLES,numberOfIndices, GL_UNSIGNED_INT, (void*)0);
 			
 
 		
