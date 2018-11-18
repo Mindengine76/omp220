@@ -243,13 +243,13 @@ int main(int argc, char * argv[])
 	}
 
 
-	// *********************************LOAD MODELIN THIS SECTION**************************************************************
+	// *********************************LOAD MODEL IN THIS SECTION**************************************************************
 	//unsigned int numberOfVertices=0;
 	//unsigned int numberOfIndices=0; 
 	//loadModelFromFile("Tank1.Fbx",vertexbuffer,elementBuffer, numberOfVertices, numberOfIndices);
 
 
-	std::vector<Mesh*>meshes; 
+	std::vector<Mesh>* meshes; 
 	loadMeshesFromFile("Tank1.fbx", meshes);
 
 
@@ -272,8 +272,6 @@ int main(int argc, char * argv[])
 		SDL_Quit();
 		return 1;
 	}
-
-
 
 
 
@@ -378,7 +376,8 @@ int main(int argc, char * argv[])
 
 
 			//Render and updating with open gl HERE!!!!!
-			glClearColor(0.0, 0.0, 0.0, 1.0);
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClearDepth(1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			glUseProgram(programID);
@@ -421,7 +420,6 @@ int main(int argc, char * argv[])
 		}
 
 		auto iter = meshes.begin();
-
 		while(iter != meshes.end())
 		{
 			if ((*iter))

@@ -7,12 +7,14 @@
 
 
 #include<string>
+#include<vector>
+
 #include "GL/glew.h"
 #include<SDL_opengl.h>
+#include <glm\glm.hpp>
 
-#include<vector>
+
 #include"vertex.h"
-
 #include"Mesh.h"
 
 
@@ -22,4 +24,6 @@
 
 bool loadModelFromFile(const std::string& filename, GLuint VBO, GLuint EBOP, unsigned int& numberOfVerts, unsigned int& numberOfIndices);
 
-bool loadMeshesFromFile(const std::string& filename, std::vector<Mesh *>& meshes);
+bool loadMeshesFromFile(const std::string& filename, std::vector<Mesh*> & meshes);
+
+
