@@ -12,4 +12,6 @@ void main(){
 
 color = texture2D(baseTexture,vertexTextureCoordOut);
 
+
+
 }

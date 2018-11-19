@@ -23,14 +23,14 @@ Mesh::~Mesh()
 void Mesh::copyMeshData(std::vector<Vertex>& verticies, std::vector<unsigned int>& indices)
 {
 
+	glBindVertexArray(m_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	glBufferData(GL_ARRAY_BUFFER, verticies.size()*sizeof(Vertex), verticies.data(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(unsigned int), verticies.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
 
-	glBindVertexArray(m_VAO);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(

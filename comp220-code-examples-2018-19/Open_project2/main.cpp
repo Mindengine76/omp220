@@ -250,7 +250,7 @@ int main(int argc, char * argv[])
 
 
 	std::vector<Mesh*> meshes; 
-	loadMeshesFromFile("Tank1.fbx", meshes);
+	loadMeshesFromFile("mutant.fbx", meshes);
 
 
 
@@ -301,7 +301,7 @@ int main(int argc, char * argv[])
 
 	//projection matrixs
 
-	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(45.0f), float(800 / 600), 0.1f, 100.0f);
+	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(45.0f), float(800 / 600), 0.1f, 1000.0f);
 	
 
 	//Keep all uniforms here!!!!______________________________
