@@ -249,7 +249,7 @@ int main(int argc, char * argv[])
 	//loadModelFromFile("Tank1.Fbx",vertexbuffer,elementBuffer, numberOfVertices, numberOfIndices);
 
 
-	std::vector<Mesh>* meshes; 
+	std::vector<Mesh*> meshes; 
 	loadMeshesFromFile("Tank1.fbx", meshes);
 
 
@@ -369,6 +369,8 @@ int main(int argc, char * argv[])
 					case SDLK_LEFT: 
 						position.x -= 1.0f;
 						break;
+
+						//add mouse functions
 					}
 
 				}

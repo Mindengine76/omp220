@@ -18,10 +18,6 @@
 #include"Mesh.h"
 
 
-
-
-
-
 bool loadModelFromFile(const std::string& filename, GLuint VBO, GLuint EBOP, unsigned int& numberOfVerts, unsigned int& numberOfIndices);
 
 bool loadMeshesFromFile(const std::string& filename, std::vector<Mesh*> & meshes);

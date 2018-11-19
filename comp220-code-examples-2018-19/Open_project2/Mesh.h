@@ -13,7 +13,6 @@
 #include<vector>
 #include"vertex.h"
 
-#include"model.h"
 
 
 class Mesh 
